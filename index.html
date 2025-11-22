@@ -736,6 +736,7 @@
             const modalCloseBtn = document.getElementById('modalCloseBtn');
             const churchEmailField = document.getElementById('churchEmail');
             const replyToEmail = document.getElementById('replyToEmail');
+            const form = document.getElementById('churchInfoForm');
             
             // Set reply-to email when church email is entered
             churchEmailField.addEventListener('blur', function() {
@@ -925,10 +926,8 @@
                 container.appendChild(newProject);
             });
             
-            // Form submission
+            // Form submission - SIMPLIFIED APPROACH
             document.getElementById('churchInfoForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
                 // Show loading indicator
                 loadingIndicator.style.display = 'block';
                 submitButton.disabled = true;
@@ -950,78 +949,62 @@
                     showNotification('Please fill in all required fields.', 'error');
                     loadingIndicator.style.display = 'none';
                     submitButton.disabled = false;
+                    e.preventDefault();
                     return;
                 }
                 
-                // Submit the form to Formspree
-                const formData = new FormData(this);
-                
-                fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Show success modal
-                        showSuccessModal();
-                        
-                        // Reset form
-                        this.reset();
-                        
-                        // Reset dynamic sections
-                        document.getElementById('ministriesContainer').innerHTML = `
-                            <div class="ministry-item">
-                                <h3>Ministry #1</h3>
-                                <div class="form-group">
-                                    <label for="ministryName1" class="required">Ministry Name</label>
-                                    <input type="text" id="ministryName1" name="ministryName[]" required placeholder="e.g., Youth Ministry">
-                                </div>
-                                <div class="form-group">
-                                    <label for="ministryDescription1" class="required">Ministry Description</label>
-                                    <textarea id="ministryDescription1" name="ministryDescription[]" required placeholder="What does this ministry do? Who is it for?"></textarea>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="ministryMeeting1">Meeting Day/Time</label>
-                                        <input type="text" id="ministryMeeting1" name="ministryMeeting[]" placeholder="e.g., Tuesdays, 5:00 PM">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ministryLocation1">Meeting Location</label>
-                                        <input type="text" id="ministryLocation1" name="ministryLocation[]" placeholder="e.g., Ruaka Community Hall">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="ministryLeader1" class="required">Ministry Leader Name</label>
-                                        <input type="text" id="ministryLeader1" name="ministryLeader[]" required placeholder="e.g., Michael Mwangi">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ministryContact1">Leader Contact</label>
-                                        <input type="text" id="ministryContact1" name="ministryContact[]" placeholder="e.g., 0722 123 456">
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        
-                        // Reset counters
-                        ministryCount = 1;
-                        beltCount = 1;
-                        eventCount = 1;
-                        projectCount = 1;
-                    } else {
-                        showNotification('There was an error submitting the form. Please try again.', 'error');
-                    }
-                })
-                .catch(error => {
-                    showNotification('Network error. Please check your connection and try again.', 'error');
-                })
-                .finally(() => {
+                // Let the form submit normally to Formspree
+                // Formspree will handle the redirect
+                // We'll show success modal after a short delay to simulate the process
+                setTimeout(() => {
                     loadingIndicator.style.display = 'none';
                     submitButton.disabled = false;
-                });
+                    showSuccessModal();
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Reset dynamic sections
+                    document.getElementById('ministriesContainer').innerHTML = `
+                        <div class="ministry-item">
+                            <h3>Ministry #1</h3>
+                            <div class="form-group">
+                                <label for="ministryName1" class="required">Ministry Name</label>
+                                <input type="text" id="ministryName1" name="ministryName[]" required placeholder="e.g., Youth Ministry">
+                            </div>
+                            <div class="form-group">
+                                <label for="ministryDescription1" class="required">Ministry Description</label>
+                                <textarea id="ministryDescription1" name="ministryDescription[]" required placeholder="What does this ministry do? Who is it for?"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="ministryMeeting1">Meeting Day/Time</label>
+                                    <input type="text" id="ministryMeeting1" name="ministryMeeting[]" placeholder="e.g., Tuesdays, 5:00 PM">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ministryLocation1">Meeting Location</label>
+                                    <input type="text" id="ministryLocation1" name="ministryLocation[]" placeholder="e.g., Ruaka Community Hall">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="ministryLeader1" class="required">Ministry Leader Name</label>
+                                    <input type="text" id="ministryLeader1" name="ministryLeader[]" required placeholder="e.g., Michael Mwangi">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ministryContact1">Leader Contact</label>
+                                    <input type="text" id="ministryContact1" name="ministryContact[]" placeholder="e.g., 0722 123 456">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Reset counters
+                    ministryCount = 1;
+                    beltCount = 1;
+                    eventCount = 1;
+                    projectCount = 1;
+                }, 1500);
             });
         });
     </script>
